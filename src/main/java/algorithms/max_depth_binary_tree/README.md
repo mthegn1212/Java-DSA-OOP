@@ -1,7 +1,7 @@
-# Bài toán: Binary Tree Level Order Traversal
+# Bài toán: Maximum Depth of Binary Tree
 
 ## 1. Đề bài
-Cho `root` của một cây nhị phân. Hãy trả về giá trị của các node theo thứ tự **từng tầng một** (từ trái sang phải, từ trên xuống dưới).
+Cho `root` của một cây nhị phân. Hãy tìm chiều sâu lớn nhất (số lượng node trên đường đi dài nhất từ gốc xuống lá).
 
 **Ví dụ:**
 - Input:
@@ -12,22 +12,25 @@ Cho `root` của một cây nhị phân. Hãy trả về giá trị của các n
     /  \
    15   7
 ```
-- Output: `[[3], [9, 20], [15, 7]]`
+- Output: `3`
+- Giải thích: Đường đi dài nhất là `3 -> 20 -> 7` hoặc `3 -> 20 -> 15`.
 
 ## 2. Phân tích tối ưu
 
-### Tại sao không dùng Đệ quy (DFS)?
-- DFS (như bài Max Depth) có xu hướng đâm sâu xuống dưới cùng rồi mới quay lại. Muốn gom nhóm theo tầng bằng DFS khá phức tạp (phải truyền thêm biến `level` và dùng HashMap).
+### Cách tiếp cận: Đệ quy (DFS - Depth First Search) ✅
 
-### Cách tiếp cận: BFS (Queue) ✅
-- **Tư duy:** Sử dụng hàng đợi (**Queue** - Vào trước ra trước).
-- **Quy trình:**
-  1. Cho `root` vào Queue.
-  2. Khi Queue không rỗng:
-     - Đếm xem hiện tại trong Queue có bao nhiêu node (đó chính là **số node của tầng hiện tại**).
-     - Lấy từng đó node ra, cho vào danh sách con.
-     - Đồng thời, nếu node đó có con (trái/phải), nhét con vào cuối Queue (để dành cho tầng sau).
-  3. Lặp lại cho đến khi Queue rỗng.
+**Tư duy:**
+Chiều sâu của một node sẽ bằng: `1 (chính nó) + Max(Chiều sâu con trái, Chiều sâu con phải)`.
 
-- **Độ phức tạp thời gian:** $O(n)$ (Thăm mỗi node 1 lần).
-- **Độ phức tạp không gian:** $O(w)$ (w là độ rộng lớn nhất của cây - số node tối đa ở 1 tầng).
+Đây là bài toán con điển hình: Muốn biết bố cao bao nhiêu, phải hỏi 2 đứa con xem đứa nào cao hơn rồi cộng thêm 1.
+
+**Thuật toán:**
+1. **Base case:** Nếu node là `null` -> Chiều sâu là `0`.
+2. **Đệ quy:**
+   - Gọi `maxDepth(root.left)` để lấy chiều sâu bên trái.
+   - Gọi `maxDepth(root.right)` để lấy chiều sâu bên phải.
+3. **Kết quả:** Trả về `1 + Math.max(left, right)`.
+
+**Độ phức tạp:**
+- Thời gian: $O(n)$ (Thăm mỗi node đúng 1 lần).
+- Không gian: $O(h)$ (Chiều cao cây - do ngăn xếp đệ quy).
